@@ -1,0 +1,53 @@
+{
+    "id": 60,
+    "name": "qwdqwdqwdqdqwd",
+    "quantity": 24,
+    "status": "active",
+    "start_date": "2025-01-08 00:00:00",
+    "end_date": "2025-01-31 00:00:00",
+    "rasxod": "4",
+    "comment": "qwdqwdqwdqwd qwd qwdqwdqwd qwdqw d qwdwq",
+    "instructions": [
+        {
+            "id": 65,
+            "title": "qwdqwdq",
+            "description": "wdqwdqwdqwdqwdqwd"
+        }
+    ],
+    "order_model": {
+        "id": 54,
+        "rasxod": "0.5",
+        "model": {
+            "id": 50,
+            "name": "Prezident",
+            "rasxod": "0.5"
+        },
+        "submodels": [
+            {
+                "id": 110,
+                "submodel": {
+                    "id": 67,
+                    "name": "Kastyum4"
+                }
+            }
+        ],
+        "sizes": [
+            {
+                "id": 15,
+                "quantity": 12,
+                "size": {
+                    "id": 149,
+                    "name": "123-12"
+                }
+            },
+            {
+                "id": 16,
+                "quantity": 12,
+                "size": {
+                    "id": 150,
+                    "name": "12-21"
+                }
+            }
+        ]
+    }
+}
