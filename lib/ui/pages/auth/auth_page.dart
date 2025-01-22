@@ -3,7 +3,6 @@ import 'package:cutting_master/providers/main/main_provider.dart';
 import 'package:cutting_master/ui/pages/home/home_page.dart';
 import 'package:cutting_master/ui/widgets/custom_input.dart';
 import 'package:cutting_master/utils/theme/app_colors.dart';
-import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class AuthPage extends StatelessWidget {

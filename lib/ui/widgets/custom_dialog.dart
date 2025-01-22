@@ -1,5 +1,4 @@
 import 'package:cutting_master/utils/theme/app_colors.dart';
-import 'package:flutter/material.dart';
 
 class CustomDialog extends StatefulWidget {
   const CustomDialog({

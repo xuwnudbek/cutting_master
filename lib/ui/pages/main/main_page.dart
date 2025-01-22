@@ -31,7 +31,7 @@ class MainPage extends StatelessWidget {
                 create: (context) => CuttingProvider()..initialize(),
               ),
             ],
-            child: page['page'],
+            builder: (context, child) => page['page'],
           ),
           bottomNavigationBar: AppBottomNavbar(),
         );

@@ -9,7 +9,7 @@ enum Result { success, error }
 class Api {
   static String baseUrl = "176.124.208.61:2005";
   static String middle = "api/cuttingMaster";
-  static String login = "$middle$middle/login";
+  static String login = "api/login";
   static String order = "$middle/orders";
   static String model = "$middle/models";
   static String recipe = "$middle/recipes";

@@ -1,5 +1,4 @@
 import 'package:cutting_master/providers/main/main_provider.dart';
-import 'package:cutting_master/ui/pages/splash/splash_page.dart';
 import 'package:cutting_master/utils/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';

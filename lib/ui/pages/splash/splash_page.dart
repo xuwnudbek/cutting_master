@@ -1,8 +1,4 @@
-import 'package:cutting_master/services/storage_service.dart';
-import 'package:cutting_master/ui/pages/auth/auth_page.dart';
-import 'package:cutting_master/ui/pages/home/home_page.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 
 class SplashPage extends StatefulWidget {
   const SplashPage({super.key});
