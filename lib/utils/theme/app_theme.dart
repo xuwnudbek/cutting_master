@@ -30,7 +30,6 @@ class AppTheme {
         dividerTheme: const DividerThemeData(
           space: 0,
           thickness: 1,
-          // color: primary,
         ),
         iconButtonTheme: IconButtonThemeData(
           style: ButtonStyle(
@@ -43,7 +42,6 @@ class AppTheme {
             ),
           ),
         ),
-
         shadowColor: AppColors.dark.withValues(alpha: 0.2),
         datePickerTheme: DatePickerThemeData(
           shape: RoundedRectangleBorder(
@@ -65,6 +63,5 @@ class AppTheme {
           color: AppColors.light,
           surfaceTintColor: Colors.transparent,
         ),
-        // useMaterial3: true,
       );
 }

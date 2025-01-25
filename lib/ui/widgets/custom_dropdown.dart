@@ -27,8 +27,6 @@ class CustomDropdown extends StatefulWidget {
 }
 
 class _CustomDropdownState extends State<CustomDropdown> {
-  // dynamic value;
-
   double? get size => widget.size;
   Color? get color => widget.color;
   String? get hint => widget.hint;
@@ -37,7 +35,6 @@ class _CustomDropdownState extends State<CustomDropdown> {
 
   @override
   void initState() {
-    // value = widget.value;
     super.initState();
   }
 
@@ -55,6 +52,7 @@ class _CustomDropdownState extends State<CustomDropdown> {
           padding: const EdgeInsets.symmetric(horizontal: 16),
           child: DropdownButtonHideUnderline(
             child: DropdownButton(
+              elevation: 15,
               menuMaxHeight: 300,
               isExpanded: true,
               items: items,

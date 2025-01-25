@@ -1,6 +1,7 @@
 import 'package:cutting_master/providers/cutting/cutting_provider.dart';
 import 'package:cutting_master/services/storage_service.dart';
 import 'package:cutting_master/ui/pages/order_details/order_details_page.dart';
+import 'package:cutting_master/ui/pages/working/working_page.dart';
 import 'package:cutting_master/utils/extension/datetime_extension.dart';
 import 'package:cutting_master/utils/theme/app_colors.dart';
 import 'package:get/get.dart';
@@ -278,29 +279,56 @@ class CuttingPage extends StatelessWidget {
                             ],
                           ),
                         SizedBox(height: 16),
-                        TextButton(
-                          style: TextButton.styleFrom(
-                            backgroundColor: provider.isLoading ? AppColors.warning.withValues(alpha: 0.2) : AppColors.warning,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                          ),
-                          onPressed: () async {
-                            if (provider.isLoading) return;
-                            StorageService.write("order_id", order['id']);
-                            await Get.to(() => OrderDetailsPage());
-                          },
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            spacing: 8,
-                            children: [
-                              Text("Details"),
-                              Icon(
-                                Icons.arrow_outward_rounded,
-                                color: AppColors.light,
+                        Row(
+                          spacing: 8,
+                          children: [
+                            Expanded(
+                              child: TextButton(
+                                style: TextButton.styleFrom(
+                                  backgroundColor: AppColors.success,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                ),
+                                onPressed: () async {
+                                  StorageService.write("order_id", order['id']);
+                                  Get.to(() => WorkingPage());
+                                },
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text("Boshlash"),
+                                  ],
+                                ),
                               ),
-                            ],
-                          ),
+                            ),
+                            Expanded(
+                              child: TextButton(
+                                style: TextButton.styleFrom(
+                                  backgroundColor: provider.isLoading ? AppColors.warning.withValues(alpha: 0.2) : AppColors.warning,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                ),
+                                onPressed: () async {
+                                  if (provider.isLoading) return;
+                                  StorageService.write("order_id", order['id']);
+                                  await Get.to(() => OrderDetailsPage());
+                                },
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  spacing: 8,
+                                  children: [
+                                    Text("Batafsil"),
+                                    Icon(
+                                      Icons.arrow_outward_rounded,
+                                      color: AppColors.light,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
                       ],
                     ),

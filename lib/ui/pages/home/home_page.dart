@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:cutting_master/providers/home/home_provider.dart';
 import 'package:cutting_master/services/storage_service.dart';
 import 'package:cutting_master/ui/pages/order_details/order_details_page.dart';
@@ -248,6 +246,7 @@ class HomePage extends StatelessWidget {
                             onTap: () async {
                               var dateTime = DatePicker.showDateTimePicker(
                                 context,
+                                locale: Locale('uz', 'UZ'),
                                 currentTime: DateTime.now().add(Duration(minutes: 5)),
                                 onConfirm: (time) {
                                   orderDetails['planned_time'] = time;
@@ -364,7 +363,7 @@ class HomePage extends StatelessWidget {
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 spacing: 8,
                                 children: [
-                                  Text("Details"),
+                                  Text("Batafsil"),
                                   Icon(
                                     Icons.arrow_outward_rounded,
                                     color: AppColors.light,

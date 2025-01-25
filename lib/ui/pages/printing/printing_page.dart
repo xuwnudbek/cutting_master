@@ -306,7 +306,7 @@ class PrintingPage extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.center,
                           spacing: 8,
                           children: [
-                            Text("Details"),
+                            Text("Batafsil"),
                             Icon(
                               Icons.arrow_outward_rounded,
                               color: AppColors.light,

@@ -1,6 +1,8 @@
 import 'dart:developer';
 
 import 'package:cutting_master/providers/order_details/order_details_provider.dart';
+import 'package:cutting_master/services/storage_service.dart';
+import 'package:cutting_master/ui/widgets/custom_snackbars.dart';
 import 'package:cutting_master/utils/extension/datetime_extension.dart';
 import 'package:cutting_master/utils/theme/app_colors.dart';
 import 'package:provider/provider.dart';
@@ -10,6 +12,7 @@ class OrderDetailsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final fromCutting = StorageService.read("from");
     final textTheme = TextTheme.of(context);
 
     return ChangeNotifierProvider<OrderDetailsProvider>(
@@ -17,7 +20,7 @@ class OrderDetailsPage extends StatelessWidget {
       builder: (context, snapshot) {
         return Scaffold(
           appBar: AppBar(
-            title: const Text('Order Details'),
+            title: const Text('Buyurtma ma`lumotlari'),
           ),
           body: Consumer<OrderDetailsProvider>(
             builder: (context, provider, _) {
@@ -69,7 +72,7 @@ class OrderDetailsPage extends StatelessWidget {
                             Text.rich(
                               TextSpan(children: [
                                 TextSpan(
-                                  text: 'Quantity: ',
+                                  text: 'Miqdor: ',
                                 ),
                                 TextSpan(
                                   text: '${provider.order['quantity']} ta',
@@ -102,7 +105,7 @@ class OrderDetailsPage extends StatelessWidget {
                             Text.rich(
                               TextSpan(children: [
                                 TextSpan(
-                                  text: 'Deadline: ',
+                                  text: 'Muddat: ',
                                 ),
                                 TextSpan(
                                   text: "${DateTime.tryParse(provider.order['start_date'])?.toYMD ?? "N/A"} - ${DateTime.tryParse(provider.order['end_date'])?.toYMD ?? "N/A"}",
@@ -115,7 +118,7 @@ class OrderDetailsPage extends StatelessWidget {
                               spacing: 4,
                               children: [
                                 Text(
-                                  'Comment: ',
+                                  'Izoh: ',
                                 ),
                                 Container(
                                   decoration: BoxDecoration(
@@ -173,7 +176,7 @@ class OrderDetailsPage extends StatelessWidget {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                      "Submodellar: ",
+                                      "Mahsulotlar: ",
                                       style: textTheme.bodyMedium,
                                     ),
                                     Container(
@@ -270,7 +273,6 @@ class OrderDetailsPage extends StatelessWidget {
                                 children: [
                                   ...(provider.order['instructions'] ?? []).map((instruction) {
                                     int index = (provider.order['instructions'] ?? []).indexOf(instruction);
-                                    inspect(provider.order['id']);
                                     return ListTile(
                                       leading: Text(
                                         "${index + 1}.",
@@ -292,7 +294,7 @@ class OrderDetailsPage extends StatelessWidget {
                             ),
                           ],
                         ),
-                      if ((provider.order['orderPrintingTime'] ?? {}).isNotEmpty)
+                      if (provider.orderPrintingTime.isNotEmpty)
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -366,7 +368,7 @@ class OrderDetailsPage extends StatelessWidget {
                                     spacing: 4,
                                     children: [
                                       Text(
-                                        'Comment: ',
+                                        'Izoh: ',
                                       ),
                                       Container(
                                         decoration: BoxDecoration(
@@ -392,7 +394,7 @@ class OrderDetailsPage extends StatelessWidget {
                           children: [
                             const SizedBox(height: 16),
                             Text(
-                              'Mahsulotlar',
+                              'Xom ashyolar',
                               style: textTheme.titleMedium,
                             ),
                             const SizedBox(height: 4),
@@ -435,7 +437,7 @@ class OrderDetailsPage extends StatelessWidget {
                                             child: Padding(
                                               padding: const EdgeInsets.all(8.0),
                                               child: Text(
-                                                'Mahsulot',
+                                                'Nomi',
                                                 style: textTheme.titleMedium,
                                               ),
                                             ),
@@ -444,7 +446,7 @@ class OrderDetailsPage extends StatelessWidget {
                                             child: Padding(
                                               padding: const EdgeInsets.all(8.0),
                                               child: Text(
-                                                'Miqdor',
+                                                'Miqdori',
                                                 style: textTheme.titleMedium,
                                               ),
                                             ),
@@ -486,6 +488,306 @@ class OrderDetailsPage extends StatelessWidget {
                                   ),
                                 ],
                               ),
+                            ),
+                          ],
+                        ),
+                      if (provider.orderOutcomes.isNotEmpty)
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const SizedBox(height: 16),
+                            Text(
+                              'Chiqimlar',
+                              style: textTheme.titleMedium,
+                            ),
+                            const SizedBox(height: 4),
+                            Column(
+                              spacing: 8,
+                              children: [
+                                ...provider.orderOutcomes.map((outcome) {
+                                  String status = outcome['status'];
+
+                                  return ExpansionTile(
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(8),
+                                    ),
+                                    backgroundColor: AppColors.light,
+                                    collapsedBackgroundColor: AppColors.light,
+                                    title: Row(
+                                      children: [
+                                        Text.rich(
+                                          TextSpan(
+                                            children: [
+                                              TextSpan(
+                                                text: "№",
+                                                style: TextTheme.of(context).titleMedium,
+                                              ),
+                                              TextSpan(
+                                                text: " - ",
+                                                style: TextTheme.of(context).bodyMedium,
+                                              ),
+                                              TextSpan(
+                                                text: "${outcome['number']}",
+                                                style: TextTheme.of(context).bodyMedium,
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        Spacer(),
+                                        Container(
+                                          decoration: BoxDecoration(
+                                            color: status == "sent"
+                                                ? AppColors.dark.withValues(alpha: 0.2)
+                                                : status == "accepted"
+                                                    ? AppColors.success.withValues(alpha: 0.2)
+                                                    : status == "cancelled"
+                                                        ? AppColors.danger.withValues(alpha: 0.2)
+                                                        : AppColors.dark.withValues(alpha: 0.2),
+                                            borderRadius: BorderRadius.circular(8),
+                                          ),
+                                          padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                                          child: Text(
+                                            status == "sent"
+                                                ? "Yuborilgan"
+                                                : status == "accepted"
+                                                    ? "Qabul qilingan"
+                                                    : status == "cancelled"
+                                                        ? "Rad etilgan"
+                                                        : "Tayyorlanmoqda",
+                                            style: textTheme.titleSmall?.copyWith(
+                                              fontSize: 9,
+                                              color: status == "sent"
+                                                  ? AppColors.dark
+                                                  : status == "accepted"
+                                                      ? AppColors.success
+                                                      : status == "cancelled"
+                                                          ? AppColors.danger
+                                                          : AppColors.dark.withValues(alpha: 0.5),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    childrenPadding: EdgeInsets.all(4),
+                                    expandedAlignment: Alignment.centerLeft,
+                                    expandedCrossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      SingleChildScrollView(
+                                        scrollDirection: Axis.horizontal,
+                                        child: Table(
+                                          border: TableBorder.all(
+                                            color: AppColors.secondary,
+                                            borderRadius: BorderRadius.circular(4),
+                                          ),
+                                          columnWidths: {
+                                            0: const IntrinsicColumnWidth(),
+                                            1: const FixedColumnWidth(300),
+                                            2: const IntrinsicColumnWidth(),
+                                          },
+                                          children: [
+                                            TableRow(
+                                              children: [
+                                                TableCell(
+                                                  child: Padding(
+                                                    padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8),
+                                                    child: Center(
+                                                      child: Text(
+                                                        '#',
+                                                        style: textTheme.titleMedium,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                                TableCell(
+                                                  child: Padding(
+                                                    padding: const EdgeInsets.all(8.0),
+                                                    child: Text(
+                                                      'Nomi',
+                                                      style: textTheme.titleMedium,
+                                                    ),
+                                                  ),
+                                                ),
+                                                TableCell(
+                                                  child: Padding(
+                                                    padding: const EdgeInsets.all(8.0),
+                                                    child: Center(
+                                                      child: Text(
+                                                        'Miqdori',
+                                                        style: textTheme.titleMedium,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                            ...(outcome['items'] ?? []).map((item) {
+                                              int index = (outcome['items'] ?? []).indexOf(item);
+                                              return TableRow(
+                                                children: [
+                                                  Padding(
+                                                    padding: const EdgeInsets.all(8.0),
+                                                    child: Center(
+                                                      child: Text(
+                                                        "${index + 1}",
+                                                        style: textTheme.bodyMedium,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  Padding(
+                                                    padding: const EdgeInsets.all(8.0),
+                                                    child: Text.rich(
+                                                      TextSpan(
+                                                        children: [
+                                                          TextSpan(
+                                                            text: "${item['name'] ?? "N/A"}",
+                                                          ),
+                                                          TextSpan(
+                                                            text: " — ",
+                                                          ),
+                                                          TextSpan(
+                                                            text: "${item['code'] ?? "N/A"}",
+                                                            style: textTheme.bodyMedium?.copyWith(color: AppColors.dark.withValues(alpha: 0.5)),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                      style: textTheme.bodyMedium,
+                                                    ),
+                                                  ),
+                                                  Padding(
+                                                    padding: const EdgeInsets.all(8.0),
+                                                    child: Text.rich(
+                                                      TextSpan(
+                                                        children: [
+                                                          TextSpan(
+                                                            text: "${item['quantity'] ?? "N/A"}",
+                                                          ),
+                                                          TextSpan(
+                                                            text: " — ",
+                                                          ),
+                                                          TextSpan(
+                                                            text: "${item['unit']?['name'] ?? "N/A"}",
+                                                          ),
+                                                        ],
+                                                      ),
+                                                      style: textTheme.bodyMedium,
+                                                    ),
+                                                  ),
+                                                ],
+                                              );
+                                            }).toList(),
+                                          ],
+                                        ),
+                                      ),
+                                      SizedBox(height: 8),
+                                      if (status == "sent")
+                                        Row(
+                                          spacing: 8,
+                                          children: [
+                                            Expanded(
+                                              child: TextButton(
+                                                style: TextButton.styleFrom(
+                                                  backgroundColor: provider.isLoading ? AppColors.dark.withValues(alpha: 0.2) : AppColors.success,
+                                                  shape: RoundedRectangleBorder(
+                                                    borderRadius: BorderRadius.circular(8),
+                                                  ),
+                                                ),
+                                                onPressed: () async {
+                                                  if (provider.isLoading) return;
+                                                  bool isAccepted = await provider.acceptOrCancelCompletedItem(outcome['id'], "accepted", context);
+
+                                                  if (isAccepted) {
+                                                    CustomSnackbars(context).success("Item accepted successfully");
+                                                  } else {
+                                                    // CustomSnackbars(context).error("Failed to accept item");
+                                                  }
+                                                },
+                                                child: Text("Qabul qilish"),
+                                              ),
+                                            ),
+                                            Expanded(
+                                              child: TextButton(
+                                                style: TextButton.styleFrom(
+                                                  backgroundColor: provider.isLoading ? AppColors.dark.withValues(alpha: 0.2) : AppColors.danger,
+                                                  shape: RoundedRectangleBorder(
+                                                    borderRadius: BorderRadius.circular(8),
+                                                  ),
+                                                ),
+                                                onPressed: () async {
+                                                  if (provider.isLoading) return;
+                                                  bool isCanceled = await provider.acceptOrCancelCompletedItem(outcome['id'], "cancelled", context);
+
+                                                  if (isCanceled) {
+                                                    CustomSnackbars(context).success("Item canceled successfully");
+                                                  } else {
+                                                    // CustomSnackbars(context).error("Failed to cancel item");
+                                                  }
+                                                },
+                                                child: Text("Rad etish"),
+                                              ),
+                                            ),
+                                          ],
+                                        )
+                                      else if (status == "accepted")
+                                        TextButton(
+                                          style: TextButton.styleFrom(
+                                            backgroundColor: AppColors.success.withValues(alpha: 0.2),
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.circular(8),
+                                            ),
+                                          ),
+                                          onPressed: () async {},
+                                          child: Row(
+                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            children: [
+                                              Text(
+                                                "Qabul qilingan",
+                                                style: textTheme.titleMedium?.copyWith(color: AppColors.success),
+                                              ),
+                                            ],
+                                          ),
+                                        )
+                                      else if (status == "cancelled")
+                                        TextButton(
+                                          style: TextButton.styleFrom(
+                                            backgroundColor: AppColors.danger.withValues(alpha: 0.1),
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.circular(8),
+                                            ),
+                                          ),
+                                          onPressed: () async {},
+                                          child: Row(
+                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            children: [
+                                              Text(
+                                                "Bekor qilingan",
+                                                style: textTheme.titleMedium?.copyWith(color: AppColors.danger),
+                                              ),
+                                            ],
+                                          ),
+                                        )
+                                      else if (status == "draft")
+                                        TextButton(
+                                          style: TextButton.styleFrom(
+                                            backgroundColor: AppColors.dark.withValues(alpha: 0.2),
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.circular(8),
+                                            ),
+                                          ),
+                                          onPressed: () async {},
+                                          child: Row(
+                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            children: [
+                                              Text(
+                                                "Tayyorlanmoqda",
+                                                style: textTheme.titleMedium?.copyWith(color: AppColors.dark.withValues(alpha: 0.5)),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                    ],
+                                  );
+                                }),
+                              ],
                             ),
                           ],
                         ),

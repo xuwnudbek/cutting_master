@@ -1,6 +1,6 @@
 import 'package:cutting_master/providers/auth/auth_provider.dart';
 import 'package:cutting_master/providers/main/main_provider.dart';
-import 'package:cutting_master/ui/pages/home/home_page.dart';
+import 'package:cutting_master/ui/pages/main/main_page.dart';
 import 'package:cutting_master/ui/widgets/custom_input.dart';
 import 'package:cutting_master/utils/theme/app_colors.dart';
 import 'package:provider/provider.dart';
@@ -59,7 +59,7 @@ class AuthPage extends StatelessWidget {
                           var res = await provider.onLogin(context);
 
                           if (res) {
-                            context.read<MainProvider>().page = const HomePage();
+                            context.read<MainProvider>().page = const MainPage();
                           }
                         },
                         child: Row(

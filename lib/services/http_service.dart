@@ -25,6 +25,10 @@ class Api {
   static String group = "$middle/groups";
   static String contragent = "$middle/contragents";
   static String sendToConstructor = "$middle/sendToConstructor";
+  static String completedItem = "$middle/completedItem";
+  static String specifications = "$middle/specifications";
+  static String markAsCut = "$middle/markAsCut";
+  static String cuts = "$middle/cuts";
 }
 
 class HttpService {
@@ -93,12 +97,14 @@ class HttpService {
         print("Error [POST]: ${response.body}");
 
         return {
+          'data': jsonDecode(response.body) ?? {},
           'status': Result.error,
         };
       }
     } catch (e) {
       print("Error: $e");
       return {
+        'data': jsonDecode("{'error': '$e'}") ?? {},
         'status': Result.error,
       };
     }
