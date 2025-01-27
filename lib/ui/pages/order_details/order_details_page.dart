@@ -1,4 +1,3 @@
-import 'dart:developer';
 
 import 'package:cutting_master/providers/order_details/order_details_provider.dart';
 import 'package:cutting_master/services/storage_service.dart';

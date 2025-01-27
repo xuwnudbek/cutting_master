@@ -16,6 +16,7 @@ class WorkingProvider extends ChangeNotifier {
   TextEditingController specQuantityController = TextEditingController();
 
   bool _isLoading = false;
+  bool _isSaving = false;
   Map _selectedSubmodel = {};
   Map _selectedSpecificationCategory = {};
 
@@ -42,6 +43,12 @@ class WorkingProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  bool get isSaving => _isSaving;
+  set isSaving(bool value) {
+    _isSaving = value;
+    notifyListeners();
+  }
+
   WorkingProvider();
 
   void initialize() async {
@@ -49,8 +56,6 @@ class WorkingProvider extends ChangeNotifier {
 
     await getOrder();
     await getCuts();
-
-    inspect(orderData);
 
     isLoading = false;
   }
@@ -79,36 +84,51 @@ class WorkingProvider extends ChangeNotifier {
     }
   }
 
-  Future<void> markAsCut(BuildContext context) async {
+  Future<Map?> markAsCut(BuildContext context) async {
     if (selectedSubmodel.isEmpty) {
       CustomSnackbars(context).error("Submodelni tanlang");
-      return;
+      return null;
     }
 
     if (selectedSpecificationCategory.isEmpty) {
       CustomSnackbars(context).error("Specification categoryni tanlang");
-      return;
+      return null;
     }
 
     if (specQuantityController.text.isEmpty) {
       CustomSnackbars(context).error("Miqdorni kiriting");
-      return;
+      return null;
     }
 
-    var res = await HttpService.post(Api.markAsCut, {
+    inspect(orderData);
+
+    Map<String, dynamic> data = {
       "order_id": orderData['id'],
       "category_id": selectedSpecificationCategory['id'],
       "quantity": specQuantityController.text,
-    });
+    };
+
+    var res = await HttpService.post(
+      Api.markAsCut,
+      data,
+    );
 
     if (res['status'] == Result.success) {
       await getCuts();
 
-      CustomSnackbars(context).success("Marked as cut");
+      Map printData = {
+        "order": orderData,
+        "category": selectedSpecificationCategory,
+        "quantity": specQuantityController.text,
+      };
+
+      CustomSnackbars(context).success("Kesilgan deb saqlandi!");
       specQuantityController.clear();
       selectedSpecificationCategory = {};
+
+      return printData;
     } else {
-      CustomSnackbars(context).error("Failed to mark as cut");
+      CustomSnackbars(context).error("Saqlashda xatolik yuz berdi!");
     }
   }
 }

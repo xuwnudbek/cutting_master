@@ -244,7 +244,7 @@ class HomePage extends StatelessWidget {
                           ),
                           GestureDetector(
                             onTap: () async {
-                              var dateTime = DatePicker.showDateTimePicker(
+                              DatePicker.showDateTimePicker(
                                 context,
                                 locale: Locale('uz', 'UZ'),
                                 currentTime: DateTime.now().add(Duration(minutes: 5)),

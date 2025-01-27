@@ -79,14 +79,13 @@ class _CustomInputState extends State<CustomInput> {
                 controller: widget.controller,
                 inputFormatters: widget.formatters ?? [],
                 textInputAction: TextInputAction.done,
-
                 onFieldSubmitted: (_) {
                   widget.onEnter?.call();
                   focusNode.requestFocus();
                 },
                 textAlign: widget.textAlign ?? TextAlign.start,
                 cursorWidth: 1,
-                maxLines: widget.lines,
+                maxLines: widget.lines ?? 1,
                 decoration: InputDecoration(
                   floatingLabelAlignment: FloatingLabelAlignment.start,
                   contentPadding: widget.padding ?? EdgeInsets.symmetric(horizontal: 16, vertical: 0.0),

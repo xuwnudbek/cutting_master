@@ -1,8 +1,11 @@
+import 'package:cutting_master/providers/printer/printer_provider.dart';
 import 'package:cutting_master/providers/working/working_provider.dart';
+import 'package:cutting_master/ui/pages/printer/printer_page.dart';
 import 'package:cutting_master/ui/widgets/custom_divider.dart';
 import 'package:cutting_master/ui/widgets/custom_dropdown.dart';
 import 'package:cutting_master/ui/widgets/custom_input.dart';
 import 'package:cutting_master/utils/theme/app_colors.dart';
+import 'package:get/get.dart';
 
 import 'package:provider/provider.dart';
 
@@ -13,14 +16,38 @@ class WorkingPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
 
-    return ChangeNotifierProvider<WorkingProvider>(
-      create: (context) => WorkingProvider()..initialize(),
-      builder: (context, snapshot) {
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider<PrinterProvider>(
+          create: (context) => PrinterProvider()..initialize(),
+        ),
+        ChangeNotifierProvider<WorkingProvider>(
+          create: (context) => WorkingProvider()..initialize(),
+        ),
+      ],
+      builder: (context, child) {
         return Consumer<WorkingProvider>(
           builder: (context, provider, _) {
             return Scaffold(
               appBar: AppBar(
                 title: Text('Working'),
+                actions: [
+                  IconButton(
+                    icon: Icon(
+                      Icons.print_rounded,
+                      color: AppColors.light,
+                    ),
+                    onPressed: () {
+                      Get.to(
+                        () => ChangeNotifierProvider.value(
+                          value: context.read<PrinterProvider>(),
+                          child: PrinterPage(),
+                        ),
+                      );
+                    },
+                  ),
+                  SizedBox(width: 16),
+                ],
               ),
               body: provider.isLoading
                   ? Center(
@@ -133,12 +160,23 @@ class WorkingPage extends StatelessWidget {
                               ),
                               onPressed: () async {
                                 if (provider.isLoading) return;
-                                await provider.markAsCut(context);
+                                var res = await provider.markAsCut(context);
+
+                                if (res != null) {
+                                  context.read<PrinterProvider>().sendMessageToPrinter(
+                                        context,
+                                        content: "${res['order']['id']}/${res['category']['id']}",
+                                        message: "${res['order']['name']}, ${res['category']['name']}, ${res['quantity']} ta",
+                                      );
+                                }
                               },
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  Text('Submit'),
+                                  Text(
+                                    'Saqlash',
+                                    style: textTheme.titleMedium?.copyWith(color: AppColors.light),
+                                  ),
                                 ],
                               ),
                             ),
@@ -197,12 +235,6 @@ class WorkingPage extends StatelessWidget {
                         ),
                       ),
                     ),
-              resizeToAvoidBottomInset: false,
-              // bottomNavigationBar: Padding(
-              //   padding: const EdgeInsets.all(16.0),
-              //   child:
-              //   ),
-              // ),
             );
           },
         );
