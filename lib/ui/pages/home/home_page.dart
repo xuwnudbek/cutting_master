@@ -66,9 +66,6 @@ class HomePage extends StatelessWidget {
                       title: Text.rich(
                         TextSpan(
                           children: [
-                            // TextSpan(
-                            //   text: "Buyurtma: ",
-                            // ),
                             TextSpan(
                               text: "${order['name']}",
                               style: TextTheme.of(context).titleMedium?.copyWith(

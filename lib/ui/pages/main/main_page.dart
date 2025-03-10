@@ -28,7 +28,7 @@ class MainPage extends StatelessWidget {
                   }
                 },
                 icon: Icon(
-                  Icons.logout_rounded,
+                  Icons.exit_to_app,
                 ),
               ),
             ],
