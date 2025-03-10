@@ -18,6 +18,20 @@ class MainPage extends StatelessWidget {
         return Scaffold(
           appBar: AppBar(
             title: Text('${page['title']}'),
+            actions: [
+              IconButton(
+                onPressed: () async {
+                  var res = await provider.logout(context);
+
+                  if (res == true) {
+                    provider.initialize();
+                  }
+                },
+                icon: Icon(
+                  Icons.logout_rounded,
+                ),
+              ),
+            ],
           ),
           body: MultiProvider(
             providers: [

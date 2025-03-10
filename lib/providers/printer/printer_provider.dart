@@ -13,7 +13,12 @@ class PrinterProvider extends ChangeNotifier {
 
   late StreamSubscription<List<ScanResult>> subscription;
 
-  List<ScanResult> printers = [];
+  List<ScanResult> _printers = [];
+  List<ScanResult> get printers => _printers;
+  set printers(List<ScanResult> value) {
+    _printers = value;
+    notifyListeners();
+  }
 
   bool get isLoading => _isLoading;
   set isLoading(bool value) {
@@ -27,16 +32,18 @@ class PrinterProvider extends ChangeNotifier {
     subscription = FlutterBluePlus.scanResults.listen((results) {
       printers = results;
       notifyListeners();
+    }, onDone: () {
+      isLoading = false;
     });
 
-    FlutterBluePlus.events.onCharacteristicWritten.listen((event) {
-      log("Characteristic written: ${event.characteristic.lastValue}");
-    });
+    // FlutterBluePlus.events.onCharacteristicWritten.listen((event) {
+    //   log("Characteristic written: ${event.characteristic.lastValue}");
+    // });
 
     await requestBluetoothPermissions();
     await getPrinters();
 
-    isLoading = false;
+    // isLoading = false;
   }
 
   Future<void> sendMessageToPrinter(
@@ -73,7 +80,9 @@ class PrinterProvider extends ChangeNotifier {
       ...generator.feed(1),
       ...generator.text(
         message,
+        containsChinese: true,
         styles: PosStyles(
+          align: PosAlign.center,
           bold: true,
         ),
       ),
@@ -106,12 +115,12 @@ class PrinterProvider extends ChangeNotifier {
 
   Future<void> getPrinters() async {
     await FlutterBluePlus.turnOn();
-    await FlutterBluePlus.startScan(timeout: Duration(seconds: 4));
+    await FlutterBluePlus.startScan(timeout: Duration(seconds: 1));
 
     FlutterBluePlus.cancelWhenScanComplete(subscription);
 
     subscription.onData((results) {
-      printers = results;
+      printers = results.where((el) => el.device.platformName.isNotEmpty).toList();
       notifyListeners();
     });
 

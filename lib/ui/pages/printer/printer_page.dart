@@ -1,5 +1,5 @@
 import 'package:cutting_master/providers/printer/printer_provider.dart';
-import 'package:flutter/material.dart';
+import 'package:cutting_master/utils/theme/app_colors.dart';
 import 'package:provider/provider.dart';
 
 class PrinterPage extends StatelessWidget {
@@ -7,6 +7,8 @@ class PrinterPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final textTheme = TextTheme.of(context);
+
     return Consumer<PrinterProvider>(
       builder: (context, provider, _) {
         return Scaffold(
@@ -21,6 +23,14 @@ class PrinterPage extends StatelessWidget {
               },
               child: ListView(
                 children: [
+                  if (provider.isLoading)
+                    Padding(
+                      padding: EdgeInsets.only(bottom: 8),
+                      child: LinearProgressIndicator(
+                        valueColor: AlwaysStoppedAnimation(AppColors.primary),
+                        backgroundColor: AppColors.light,
+                      ),
+                    ),
                   if (provider.printers.isEmpty)
                     SizedBox(
                       height: MediaQuery.of(context).size.height - 120,
@@ -29,20 +39,37 @@ class PrinterPage extends StatelessWidget {
                       ),
                     ),
                   ...provider.printers.map((printer) {
-                    return ListTile(
-                      title: Text(printer.device.platformName),
-                      subtitle: Text(
-                        printer.device.remoteId.toString(),
-                      ),
-                      trailing: IconButton(
-                        icon: Icon(Icons.bluetooth_connected_rounded),
-                        style: IconButton.styleFrom(
-                          backgroundColor: printer.device.isConnected ? Colors.blue : null,
-                          foregroundColor: printer.device.isConnected ? Colors.white : null,
+                    bool isConnected = printer.device.isConnected;
+
+                    return Padding(
+                      padding: const EdgeInsets.only(bottom: 8.0),
+                      child: ListTile(
+                        selected: isConnected,
+                        selectedTileColor: AppColors.primary.withValues(alpha: 0.15),
+                        tileColor: AppColors.light,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
                         ),
-                        onPressed: () {
-                          provider.connectPrinter(printer);
-                        },
+                        dense: true,
+                        title: Text(
+                          printer.device.platformName,
+                          style: textTheme.titleMedium?.copyWith(
+                            color: AppColors.primary,
+                          ),
+                        ),
+                        subtitle: Text(
+                          printer.device.remoteId.toString(),
+                        ),
+                        trailing: IconButton(
+                          icon: Icon(Icons.bluetooth_connected_rounded),
+                          style: IconButton.styleFrom(
+                            backgroundColor: printer.device.isConnected ? AppColors.primary : null,
+                            foregroundColor: printer.device.isConnected ? Colors.white : null,
+                          ),
+                          onPressed: () {
+                            provider.connectPrinter(printer);
+                          },
+                        ),
                       ),
                     );
                   }),

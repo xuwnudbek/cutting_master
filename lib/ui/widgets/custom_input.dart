@@ -8,6 +8,7 @@ class CustomInput extends StatefulWidget {
     this.tooltip,
     this.formatters,
     this.onChanged,
+    this.keyboardType,
     this.size,
     this.padding,
     this.color,
@@ -32,6 +33,7 @@ class CustomInput extends StatefulWidget {
   final Widget? trailing;
   final Function? onTrailingTap;
   final Function? onEnter;
+  final TextInputType? keyboardType;
   final BorderRadius? borderRadius;
 
   @override
@@ -83,6 +85,7 @@ class _CustomInputState extends State<CustomInput> {
                   widget.onEnter?.call();
                   focusNode.requestFocus();
                 },
+                keyboardType: widget.keyboardType,
                 textAlign: widget.textAlign ?? TextAlign.start,
                 cursorWidth: 1,
                 maxLines: widget.lines ?? 1,

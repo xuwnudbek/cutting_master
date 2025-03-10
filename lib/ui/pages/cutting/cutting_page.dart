@@ -57,12 +57,14 @@ class CuttingPage extends StatelessWidget {
                       title: Text.rich(
                         TextSpan(
                           children: [
-                            TextSpan(
-                              text: "Buyurtma: ",
-                            ),
+                            // TextSpan(
+                            //   text: "Buyurtma: ",
+                            // ),
                             TextSpan(
                               text: "${order['name']}",
-                              style: textTheme.titleMedium,
+                              style: textTheme.titleMedium?.copyWith(
+                                fontWeight: FontWeight.w600,
+                              ),
                             ),
                           ],
                         ),
@@ -146,9 +148,7 @@ class CuttingPage extends StatelessWidget {
                                               text: "${size['size']['name']}",
                                               style: textTheme.titleMedium,
                                             ),
-                                            TextSpan(
-                                              text: " ─ ",
-                                            ),
+                                            TextSpan(text: " ─ "),
                                             TextSpan(
                                               text: "${size['quantity']} ta",
                                               style: textTheme.titleMedium,
@@ -271,7 +271,7 @@ class CuttingPage extends StatelessWidget {
                                   borderRadius: BorderRadius.circular(12),
                                   border: Border.all(color: AppColors.light, width: 1),
                                 ),
-                                padding: EdgeInsets.zero,
+                                padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                                 child: Text(
                                   order['order_printing_time']?['comment'] ?? '',
                                 ),
@@ -292,7 +292,11 @@ class CuttingPage extends StatelessWidget {
                                 ),
                                 onPressed: () async {
                                   StorageService.write("order_id", order['id']);
-                                  Get.to(() => WorkingPage());
+                                  var res = await Get.to(() => WorkingPage());
+
+                                  if (res == true) {
+                                    provider.initialize();
+                                  }
                                 },
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.center,

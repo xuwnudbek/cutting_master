@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:cutting_master/utils/theme/app_colors.dart';
 
 class SplashPage extends StatefulWidget {
   const SplashPage({super.key});
@@ -10,13 +10,13 @@ class SplashPage extends StatefulWidget {
 class _SplashPageState extends State<SplashPage> {
   @override
   Widget build(BuildContext context) {
-    final textTheme = TextTheme.of(context);
-
     return Scaffold(
-      body: Center(
-        child: Text(
-          "Cutting Master",
-          style: textTheme.titleMedium,
+      body: SizedBox(
+        width: double.infinity,
+        height: double.infinity,
+        child: Image.asset(
+          "assets/images/splash.jpg",
+          fit: BoxFit.cover,
         ),
       ),
     );

@@ -29,6 +29,7 @@ class Api {
   static String specifications = "$middle/specifications";
   static String markAsCut = "$middle/markAsCut";
   static String cuts = "$middle/cuts";
+  static String finishCutting = "$middle/finishCutting";
 }
 
 class HttpService {

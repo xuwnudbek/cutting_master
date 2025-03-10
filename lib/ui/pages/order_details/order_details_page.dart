@@ -1,4 +1,3 @@
-
 import 'package:cutting_master/providers/order_details/order_details_provider.dart';
 import 'package:cutting_master/services/storage_service.dart';
 import 'package:cutting_master/ui/widgets/custom_snackbars.dart';
@@ -59,9 +58,7 @@ class OrderDetailsPage extends StatelessWidget {
                           children: [
                             Text.rich(
                               TextSpan(children: [
-                                TextSpan(
-                                  text: 'Buyurtma: ',
-                                ),
+                                TextSpan(text: 'Buyurtma: '),
                                 TextSpan(
                                   text: '${provider.order['name']}',
                                   style: textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
@@ -70,9 +67,7 @@ class OrderDetailsPage extends StatelessWidget {
                             ),
                             Text.rich(
                               TextSpan(children: [
-                                TextSpan(
-                                  text: 'Miqdor: ',
-                                ),
+                                TextSpan(text: 'Miqdor: '),
                                 TextSpan(
                                   text: '${provider.order['quantity']} ta',
                                   style: textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
@@ -81,9 +76,7 @@ class OrderDetailsPage extends StatelessWidget {
                             ),
                             Text.rich(
                               TextSpan(children: [
-                                TextSpan(
-                                  text: 'Status: ',
-                                ),
+                                TextSpan(text: 'Status: '),
                                 TextSpan(
                                   text: '${provider.order['status']}',
                                   style: textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
@@ -92,9 +85,7 @@ class OrderDetailsPage extends StatelessWidget {
                             ),
                             Text.rich(
                               TextSpan(children: [
-                                TextSpan(
-                                  text: 'Model: ',
-                                ),
+                                TextSpan(text: 'Model: '),
                                 TextSpan(
                                   text: '${provider.order['orderModel']?['model']?['name'] ?? "N/A"}',
                                   style: textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
@@ -103,35 +94,32 @@ class OrderDetailsPage extends StatelessWidget {
                             ),
                             Text.rich(
                               TextSpan(children: [
+                                TextSpan(text: 'Muddat: '),
                                 TextSpan(
-                                  text: 'Muddat: ',
-                                ),
-                                TextSpan(
-                                  text: "${DateTime.tryParse(provider.order['start_date'])?.toYMD ?? "N/A"} - ${DateTime.tryParse(provider.order['end_date'])?.toYMD ?? "N/A"}",
+                                  text: "${DateTime.tryParse(provider.order['start_date'] ?? "")?.toYMD ?? "N/A"} - ${DateTime.tryParse(provider.order['end_date'] ?? "")?.toYMD ?? "N/A"}",
                                   style: textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
                                 ),
                               ]),
                             ),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              spacing: 4,
-                              children: [
-                                Text(
-                                  'Izoh: ',
-                                ),
-                                Container(
-                                  decoration: BoxDecoration(
-                                    color: AppColors.secondary,
-                                    borderRadius: BorderRadius.circular(8),
+                            if (provider.order['comment'] != null)
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                spacing: 4,
+                                children: [
+                                  Text('Izoh: '),
+                                  Container(
+                                    decoration: BoxDecoration(
+                                      color: AppColors.secondary,
+                                      borderRadius: BorderRadius.circular(8),
+                                    ),
+                                    padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                                    child: Text(
+                                      "${provider.order['comment']}",
+                                      style: textTheme.titleMedium,
+                                    ),
                                   ),
-                                  padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                                  child: Text(
-                                    "${provider.order['comment'] ?? "N/A"}",
-                                    style: textTheme.titleMedium,
-                                  ),
-                                ),
-                              ],
-                            ),
+                                ],
+                              ),
                           ],
                         ),
                       ),
@@ -226,13 +214,11 @@ class OrderDetailsPage extends StatelessWidget {
                                                 TextSpan(
                                                   children: [
                                                     TextSpan(
-                                                      text: "${size['size']['name']}",
+                                                      text: "${size['size']?['name'] ?? "N/A"}",
                                                     ),
+                                                    TextSpan(text: " ─ "),
                                                     TextSpan(
-                                                      text: " ─ ",
-                                                    ),
-                                                    TextSpan(
-                                                      text: "${size['quantity']} ta",
+                                                      text: "${size['quantity'] ?? 0} ta",
                                                     ),
                                                   ],
                                                 ),
@@ -279,11 +265,11 @@ class OrderDetailsPage extends StatelessWidget {
                                       ),
                                       tileColor: AppColors.secondary,
                                       title: Text(
-                                        "${instruction['title']}",
+                                        "${instruction['title'] ?? "N/A"}",
                                         style: textTheme.titleMedium,
                                       ),
                                       subtitle: Text(
-                                        "${instruction['description']}",
+                                        "${instruction['description'] ?? "N/A"}",
                                         style: textTheme.bodyMedium,
                                       ),
                                     );
@@ -362,26 +348,26 @@ class OrderDetailsPage extends StatelessWidget {
                                       ),
                                     ]),
                                   ),
-                                  Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    spacing: 4,
-                                    children: [
-                                      Text(
-                                        'Izoh: ',
-                                      ),
-                                      Container(
-                                        decoration: BoxDecoration(
-                                          color: AppColors.secondary,
-                                          borderRadius: BorderRadius.circular(8),
+                                  if (provider.orderPrintingTime['comment'] != null)
+                                    Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      spacing: 4,
+                                      children: [
+                                        Text('Izoh: '),
+                                        Container(
+                                          width: double.infinity,
+                                          decoration: BoxDecoration(
+                                            color: AppColors.secondary,
+                                            borderRadius: BorderRadius.circular(8),
+                                          ),
+                                          padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                                          child: Text(
+                                            "${provider.orderPrintingTime['comment'] ?? "N/A"}",
+                                            style: textTheme.titleMedium,
+                                          ),
                                         ),
-                                        padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                                        child: Text(
-                                          "${provider.orderPrintingTime['comment'] ?? "N/A"}",
-                                          style: textTheme.titleMedium,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
+                                      ],
+                                    ),
                                 ],
                               ),
                             ),

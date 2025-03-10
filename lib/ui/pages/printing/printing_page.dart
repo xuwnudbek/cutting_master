@@ -21,17 +21,6 @@ class PrintingPage extends StatelessWidget {
         );
       }
 
-      if (provider.orders.isEmpty) {
-        return Center(
-          child: Text(
-            'Buyurtmalar topilmadi',
-            style: textTheme.bodyMedium?.copyWith(
-              color: Colors.grey,
-            ),
-          ),
-        );
-      }
-
       return Padding(
         padding: EdgeInsets.all(16),
         child: RefreshIndicator(
@@ -66,12 +55,14 @@ class PrintingPage extends StatelessWidget {
                     title: Text.rich(
                       TextSpan(
                         children: [
-                          TextSpan(
-                            text: "Buyurtma: ",
-                          ),
+                          // TextSpan(
+                          //   text: "Buyurtma: ",
+                          // ),
                           TextSpan(
                             text: "${order['name']}",
-                            style: textTheme.titleMedium,
+                            style: textTheme.titleMedium?.copyWith(
+                              fontWeight: FontWeight.w600,
+                            ),
                           ),
                         ],
                       ),
@@ -285,7 +276,9 @@ class PrintingPage extends StatelessWidget {
                                 border: Border.all(color: AppColors.light, width: 1),
                               ),
                               padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                              child: Text(order['order_printing_time']?['comment'] ?? ""),
+                              child: Text(
+                                order['order_printing_time']?['comment'] ?? "",
+                              ),
                             ),
                           ],
                         ),

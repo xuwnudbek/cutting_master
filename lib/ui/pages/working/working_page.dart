@@ -26,8 +26,8 @@ class WorkingPage extends StatelessWidget {
         ),
       ],
       builder: (context, child) {
-        return Consumer<WorkingProvider>(
-          builder: (context, provider, _) {
+        return Consumer2<WorkingProvider, PrinterProvider>(
+          builder: (context, provider, printerProvider, _) {
             return Scaffold(
               appBar: AppBar(
                 title: Text('Working'),
@@ -97,9 +97,7 @@ class WorkingPage extends StatelessWidget {
                                   ),
                                   Text.rich(
                                     TextSpan(children: [
-                                      TextSpan(
-                                        text: 'Model: ',
-                                      ),
+                                      TextSpan(text: 'Model: '),
                                       TextSpan(
                                         text: '${provider.orderData['orderModel']['model']['name']}',
                                         style: textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
@@ -127,13 +125,13 @@ class WorkingPage extends StatelessWidget {
                             SizedBox(height: 8),
                             CustomDropdown(
                               color: AppColors.light,
-                              hint: "Specification Categories",
+                              hint: "Spetsifikatsiya kategoriyasi",
                               value: provider.selectedSpecificationCategory['id'],
                               items: provider.specificationCategories.map((specCategory) {
                                 return DropdownMenuItem(
                                   value: specCategory['id'],
                                   child: Text(
-                                    specCategory['name'] ?? "Noma'lum",
+                                    specCategory['name'] ?? "Unknown",
                                   ),
                                 );
                               }).toList(),
@@ -148,7 +146,11 @@ class WorkingPage extends StatelessWidget {
                             CustomInput(
                               color: AppColors.light,
                               hint: "Miqdor",
+                              keyboardType: TextInputType.number,
                               controller: provider.specQuantityController,
+                              formatters: [
+                                FilteringTextInputFormatter.allow(RegExp('[0-9]')),
+                              ],
                             ),
                             SizedBox(height: 8),
                             TextButton(
@@ -163,20 +165,28 @@ class WorkingPage extends StatelessWidget {
                                 var res = await provider.markAsCut(context);
 
                                 if (res != null) {
-                                  context.read<PrinterProvider>().sendMessageToPrinter(
-                                        context,
-                                        content: "${res['order']['id']}/${res['category']['id']}",
-                                        message: "${res['order']['name']}, ${res['category']['name']}, ${res['quantity']} ta",
-                                      );
+                                  printerProvider.sendMessageToPrinter(
+                                    context,
+                                    content: "${res['order']['id']}/${res['category']['id']}/${res['quantity'] ?? 0}",
+                                    message: "${res['order']['name']}, ${res['category']['name']}, ${res['quantity']} ta",
+                                  );
                                 }
                               },
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  Text(
-                                    'Saqlash',
-                                    style: textTheme.titleMedium?.copyWith(color: AppColors.light),
-                                  ),
+                                  provider.isSaving
+                                      ? SizedBox.square(
+                                          dimension: 24,
+                                          child: CircularProgressIndicator(
+                                            valueColor: AlwaysStoppedAnimation(AppColors.light),
+                                            strokeWidth: 1,
+                                          ),
+                                        )
+                                      : Text(
+                                          'Saqlash',
+                                          style: textTheme.titleMedium?.copyWith(color: AppColors.light),
+                                        ),
                                 ],
                               ),
                             ),
@@ -188,7 +198,7 @@ class WorkingPage extends StatelessWidget {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    cut['submodel']['name'] ?? "Noma'lum",
+                                    cut['submodel']?['name'] ?? "Unknown",
                                     style: textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
                                   ),
                                   SizedBox(height: 4),
@@ -217,11 +227,11 @@ class WorkingPage extends StatelessWidget {
                                               ),
                                             ),
                                             title: Text(
-                                              cut['category']['name'] ?? "Noma'lum",
+                                              cut['category']['name'] ?? "Unknown",
                                               style: textTheme.titleMedium,
                                             ),
                                             subtitle: Text(
-                                              "${cut['quantity']} ta",
+                                              "${cut['quantity'] ?? 0} ta",
                                             ),
                                           );
                                         }),
@@ -235,6 +245,26 @@ class WorkingPage extends StatelessWidget {
                         ),
                       ),
                     ),
+              bottomNavigationBar: BottomAppBar(
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: TextButton(
+                        onPressed: () async {
+                          await provider.finishCuttingOrder(context);
+                        },
+                        child: Text(
+                          "Buyurtmani tugatish",
+                          style: textTheme.titleMedium?.copyWith(
+                            fontWeight: FontWeight.w600,
+                            color: AppColors.light,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
             );
           },
         );

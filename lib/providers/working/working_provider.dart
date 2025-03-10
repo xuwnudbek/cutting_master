@@ -1,4 +1,3 @@
-import 'dart:developer';
 
 import 'package:cutting_master/services/http_service.dart';
 import 'package:cutting_master/services/storage_service.dart';
@@ -49,6 +48,8 @@ class WorkingProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  
+
   WorkingProvider();
 
   void initialize() async {
@@ -85,6 +86,8 @@ class WorkingProvider extends ChangeNotifier {
   }
 
   Future<Map?> markAsCut(BuildContext context) async {
+    isSaving = true;
+
     if (selectedSubmodel.isEmpty) {
       CustomSnackbars(context).error("Submodelni tanlang");
       return null;
@@ -100,8 +103,6 @@ class WorkingProvider extends ChangeNotifier {
       return null;
     }
 
-    inspect(orderData);
-
     Map<String, dynamic> data = {
       "order_id": orderData['id'],
       "category_id": selectedSpecificationCategory['id'],
@@ -112,6 +113,9 @@ class WorkingProvider extends ChangeNotifier {
       Api.markAsCut,
       data,
     );
+
+    isSaving = false;
+
 
     if (res['status'] == Result.success) {
       await getCuts();
@@ -129,6 +133,18 @@ class WorkingProvider extends ChangeNotifier {
       return printData;
     } else {
       CustomSnackbars(context).error("Saqlashda xatolik yuz berdi!");
+    }
+    return null;
+  }
+
+  Future<void> finishCuttingOrder(BuildContext context) async {
+    var res = await HttpService.get("${Api.finishCutting}/${orderData['id']}");
+
+    if (res['status'] == Result.success) {
+      CustomSnackbars(context).success("Buyurtma tugallandi!");
+      Navigator.pop(context, true);
+    } else {
+      CustomSnackbars(context).error("Xatolik yuz berdi!");
     }
   }
 }
